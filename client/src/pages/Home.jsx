@@ -24,7 +24,7 @@ const Home = () => {
   }, []);
   const [file, setFile] = useState(null);
   const [prediction, setPrediction] = useState('');
-
+  const [filteredRes, setFilteredRes] = useState('');
   const handleFileChange = (e) => {
     setFile(e.target.files[0]);
   };
@@ -45,6 +45,11 @@ const Home = () => {
         }
       );
       setPrediction(response.data.predicted_class);
+
+      const FilteredRes = await axios.get(
+        `${serverOrigin}/filteredRes/${prediction}`
+      );
+      setProducts(FilteredRes.data);
     } catch (error) {
       console.error('Error uploading the file', error);
     }
@@ -93,7 +98,6 @@ const Home = () => {
                   {' '}
                   🔎
                 </button>
-                {prediction && <h2>Prediction: {prediction}</h2>}
               </form>
               <div className="all-products">
                 {products.map((product, index) => (
