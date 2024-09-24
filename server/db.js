@@ -24,18 +24,18 @@ const userSchema = new mongoose.Schema({
   },
 });
 
-const bookSchema = new mongoose.Schema({
-  bookname: String,
-  author: String,
+const productSchema = new mongoose.Schema({
+  productname: String,
+  price: String,
   description: String,
   fileUrl: String,
 });
 
-const IssuedBookSchema = new mongoose.Schema({
-  bookname: {
+const IssuedProductSchema = new mongoose.Schema({
+  productname: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Book',
-    required: [true, 'Book reference is required'],
+    ref: 'Product',
+    required: [true, 'Product reference is required'],
   },
   availedUser: {
     type: String,
@@ -47,8 +47,8 @@ const IssuedBookSchema = new mongoose.Schema({
   },
 });
 
-const Book = mongoose.model('Book', bookSchema);
+const Product = mongoose.model('Product', productSchema);
 
 const User = mongoose.model('User', userSchema);
-const IssuedBook = mongoose.model('IssuedBook', IssuedBookSchema);
-module.exports = { User, Book, IssuedBook };
+const IssuedProduct = mongoose.model('IssuedProduct', IssuedProductSchema);
+module.exports = { User, Product, IssuedProduct };

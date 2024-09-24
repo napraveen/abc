@@ -1,6 +1,6 @@
 const express = require('express');
 const app = express();
-const { User, Book, IssuedBook } = require('./db');
+const { User, Product, IssuedProduct } = require('./db');
 const cors = require('cors');
 const mongoose = require('mongoose');
 const cookieParser = require('cookie-parser');
@@ -42,10 +42,11 @@ app.get('/api/user/:username', async (req, res) => {
   }
 });
 
-app.get('/books', async (req, res) => {
+app.get('/products', async (req, res) => {
   try {
-    const books = await Book.find();
-    res.json(books);
+    const products = await Product.find();
+    res.json(products);
+    console.log(products);
   } catch (err) {
     res.status(500).send(err);
   }
@@ -64,14 +65,14 @@ app.post('/api/upload-image', upload.single('file'), async (req, res) => {
     const storageRef = ref(storage, 'uploads/' + file.originalname);
     await uploadBytes(storageRef, fileBuffer);
     const downloadURL = await getDownloadURL(storageRef);
-    const newBook = new Book({
-      bookname: req.body.bookname,
-      author: req.body.author,
+    const newProduct = new Product({
+      productname: req.body.productname,
+      price: req.body.price,
       description: req.body.description,
       fileUrl: downloadURL,
     });
-    console.log(newBook);
-    await newBook.save();
+    console.log(newProduct);
+    await newProduct.save();
 
     res.status(200).json({ imageUrl: downloadURL });
   } catch (error) {
@@ -108,63 +109,45 @@ app.delete('/reject', async (req, res) => {
   }
 });
 
-app.post('/issue-book', async (req, res) => {
+app.post('/issue-product', async (req, res) => {
   try {
-    const { bookId, username } = req.body;
+    const { productId, username } = req.body;
     console.log(username);
     const user = await User.findOne({ username });
 
     if (!user) {
       return res.status(404).json({ error: 'User not found' });
     }
-    const book = await Book.findById(bookId);
-    if (!book) {
-      return res.status(404).json({ error: 'Book not found' });
+    const product = await Product.findById(productId);
+    if (!product) {
+      return res.status(404).json({ error: 'product not found' });
     }
-    const issuedBook = new IssuedBook({
-      bookname: bookId,
+    const issuedProduct = new IssuedProduct({
+      productname: productId,
       availedUser: username,
       date: new Date(),
     });
-    await issuedBook.save();
+    await issuedProduct.save();
     res
       .status(200)
-      .json({ success: true, message: 'Book issued successfully' });
+      .json({ success: true, message: 'product issued successfully' });
   } catch (error) {
-    console.error('Error issuing book:', error);
+    console.error('Error issuing product:', error);
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
 
-// app.get('/issued-books', async (req, res) => {
-//   const response = await IssuedBook.find();
-//   res.json(response);
-// });
-
-// app.get('/find-bookname/:bookId', async (req, res) => {
-//   try {
-//     const book = await Book.findById(req.params.bookId);
-//     if (!book) {
-//       return res.status(404).json({ error: 'Book not found' });
-//     }
-//     res.json(book.bookname);
-//   } catch (error) {
-//     console.error('Error finding book name:', error);
-//     res.status(500).json({ error: 'Internal Server Error' });
-//   }
-// });
-
-app.get('/mybooks/:username', async (req, res) => {
+app.get('/myproducts/:username', async (req, res) => {
   try {
     console.log('sg');
     const username = req.params.username;
-    const issuedBooks = await IssuedBook.find({ availedUser: username });
-    if (!issuedBooks) {
-      return res.status(404).json({ error: 'No books found' });
+    const issuedProducts = await IssuedProduct.find({ availedUser: username });
+    if (!issuedProducts) {
+      return res.status(404).json({ error: 'No Products found' });
     }
-    res.json(issuedBooks);
+    res.json(issuedProducts);
   } catch (error) {
-    console.error('Error fetching books:', error);
+    console.error('Error fetching Products:', error);
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
