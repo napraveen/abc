@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 import GetUserDetails from '../functions/GetUserDetails';
-import lmsLogo from '../images/lmslogo.png';
+import ecomLogo from '../images/products.jpg';
 const Header = () => {
   const { userDetails } = GetUserDetails();
 
@@ -30,7 +30,13 @@ const Header = () => {
           {' '}
           <div className="header-left">
             {' '}
-            <img src={lmsLogo} alt="Logo" className="my-logo" />
+            <img
+              src={ecomLogo}
+              alt="Logo"
+              className="my-logo"
+              width="30px"
+              height="30px"
+            />
             &nbsp;
           </div>
           <div className="header-middle">
@@ -79,18 +85,7 @@ const Header = () => {
                 </p>
               </>
             ) : (
-              userDetails.verified !== '' && (
-                <p>
-                  {' '}
-                  <Link
-                    to="/duedates"
-                    style={{ textDecoration: 'none' }}
-                    className="home-header-text"
-                  >
-                    Due Dates
-                  </Link>
-                </p>
-              )
+              ''
             )}
           </div>
           <div className="header-right">
@@ -106,7 +101,13 @@ const Header = () => {
           {' '}
           <div className="header-left">
             {' '}
-            <img src={lmsLogo} alt="Logo" className="my-logo" />
+            <img
+              src={ecomLogo}
+              alt="Logo"
+              className="my-logo"
+              width="30px"
+              height="30px"
+            />
             &nbsp;
           </div>
           <div className="header-middle">
@@ -123,11 +124,11 @@ const Header = () => {
             <p>
               {' '}
               <Link
-                to="/availablebooks"
+                to="/availableproducts"
                 style={{ textDecoration: 'none' }}
                 className="home-header-text"
               >
-                Available Books
+                Available Products
               </Link>
             </p>
           </div>

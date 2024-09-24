@@ -1,18 +1,18 @@
-.book-page {
+.product-page {
   background-repeat: no-repeat;
 }
-.book-body {
+.product-body {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   width: 100vw;
 }
-.book-body h2 {
+.product-body h2 {
   width: 340px;
 }
 
-.all-books {
+.all-products {
   margin-top: 50px;
   display: flex;
   align-items: center;
@@ -20,7 +20,7 @@
   flex-wrap: wrap;
 }
 
-.all-books > div {
+.all-products > div {
   width: 300px;
   margin-bottom: 30px;
   border: 1px solid black;
@@ -29,34 +29,34 @@
   border-radius: 10px;
   height: 380px;
 }
-.all-books div p {
+.all-products div p {
   width: 200px;
 }
 
-.book-container img {
+.product-container img {
   margin-bottom: 10px;
 }
 
-.book-container h4 {
+.product-container h4 {
   margin-bottom: 10px;
 }
 
-.book-container h4 a {
+.product-container h4 a {
   text-decoration: none;
 }
 
-.book-container h4 a:hover {
+.product-container h4 a:hover {
   /* color: rgb(195, 127, 254); */
   /* transition: 0.3s ease-in-out; */
 }
 
-.book-container:hover {
+.product-container:hover {
   /* border: 2px solid rgb(163, 58, 255);
 
   background-color: rgb(246, 235, 255); */
 }
 
-.book-logos {
+.product-logos {
   width: 100%;
   height: 200px;
 }

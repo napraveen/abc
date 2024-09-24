@@ -1,27 +1,54 @@
 import GetUserDetails from '../functions/GetUserDetails';
 import { Link } from 'react-router-dom';
 import '../css/Home.css';
-import bestBook from '../images/books.webp';
+import bestProduct from '../images/products.jpg';
 import Header from './Header';
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 const Home = () => {
   const { userDetails } = GetUserDetails();
-  const [books, setBooks] = useState([]);
+  const [products, setProducts] = useState([]);
   const serverOrigin = process.env.REACT_APP_SERVER_ORIGIN;
 
   useEffect(() => {
-    const fetchBooks = async () => {
+    const fetchproducts = async () => {
       try {
-        const res = await axios.get(`${serverOrigin}/books`);
-        setBooks(res.data);
+        const res = await axios.get(`${serverOrigin}/products`);
+        setProducts(res.data);
       } catch (err) {
-        console.log('Error fetching the books data:', err);
+        console.log('Error fetching the products data:', err);
       }
     };
 
-    fetchBooks();
+    fetchproducts();
   }, []);
+  const [file, setFile] = useState(null);
+  const [prediction, setPrediction] = useState('');
+
+  const handleFileChange = (e) => {
+    setFile(e.target.files[0]);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const formData = new FormData();
+    formData.append('image', file);
+
+    try {
+      const response = await axios.post(
+        'http://localhost:8000/myapp/classify/',
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        }
+      );
+      setPrediction(response.data.predicted_class);
+    } catch (error) {
+      console.error('Error uploading the file', error);
+    }
+  };
   const numberOfStars = 4;
   return (
     <>
@@ -29,28 +56,61 @@ const Home = () => {
         {userDetails ? (
           <div>
             <Header />
-            <div className="book-body">
+
+            <div className="product-body">
               {/* <h3>
         {' '}
         Hey there, Welcome to our
-        <span> books collection!! </span>
+        <span> products collection!! </span>
       </h3> */}
-              <div className="all-books">
-                {books.map((book, index) => (
+              <form onSubmit={handleSubmit}>
+                <label
+                  for="file-upload"
+                  class="custom-file-upload"
+                  style={{
+                    backgroundColor: '#a4ff9f',
+                    height: '100px',
+                    width: '200px',
+                    borderRadius: '6px',
+                    padding: '6px',
+                    cursor: 'pointer',
+                  }}
+                >
+                  Choose a file
+                </label>
+
+                <input
+                  type="file"
+                  id="file-upload"
+                  style={{ display: 'none' }}
+                  onChange={handleFileChange}
+                />
+
+                <button
+                  type="submit"
+                  style={{ width: '50px', backgroundColor: 'white' }}
+                >
+                  {' '}
+                  🔎
+                </button>
+                {prediction && <h2>Prediction: {prediction}</h2>}
+              </form>
+              <div className="all-products">
+                {products.map((product, index) => (
                   <div
-                    className="book-container"
+                    className="product-container"
                     key={index}
                     style={{ height: '320px', width: '250px' }}
                   >
                     <a
-                      href={book.fileUrl}
+                      href={product.fileUrl}
                       target="_blank"
                       rel="noopener noreferrer"
                     >
                       <img
-                        src={book.fileUrl}
-                        alt={book.bookname}
-                        className="book-logos"
+                        src={product.fileUrl}
+                        alt={product.productname}
+                        className="product-logos"
                       />
                     </a>
 
@@ -69,18 +129,22 @@ const Home = () => {
                       ))}
                     <i
                       class="fas fa-heart"
-                      style={{ fontSize: '20px', color: '#CDCDCD' , marginLeft:"100px"}}
+                      style={{
+                        fontSize: '20px',
+                        color: '#CDCDCD',
+                        marginLeft: '100px',
+                      }}
                     ></i>
                     <h4>
                       <a
-                        href={book.fileUrl}
+                        href={product.fileUrl}
                         target="_blank"
                         rel="noopener noreferrer"
                       >
-                        {book.bookname}
+                        {product.productname}
                       </a>
                     </h4>
-                    <p>{book.author}</p>
+                    <p>{product.price}</p>
                     {userDetails && userDetails.username === 'admin' ? (
                       <>
                         {' '}
@@ -92,7 +156,7 @@ const Home = () => {
                 </button> */}
                         {/* <div
                   className={
-                    visibleBookIndex === index ? 'visible' : 'hidden'
+                    visibleproductIndex === index ? 'visible' : 'hidden'
                   }
                 >
                   <input
@@ -106,21 +170,21 @@ const Home = () => {
                     type="button"
                     value="Submit"
                     className="issue-to-submit"
-                    onClick={() => handleSubmit(book._id)}
+                    onClick={() => handleSubmit(product._id)}
                   />
                 </div> */}
                       </>
                     ) : (
                       <>
                         <p
-                          className="book-description"
+                          className="product-description"
                           style={{
                             height: '90px',
                             overflow: 'hidden',
                             width: '250px',
                           }}
                         >
-                          {book.description}
+                          {product.description}
                         </p>
                         {/* <i
                   class="fa fa-heart"
@@ -141,16 +205,19 @@ const Home = () => {
                 <div className="body-left-inside">
                   {' '}
                   <h1>
-                    Discover the world of <br></br>
-                    <span style={{ color: '#ff4f00' }}> knowledge </span>
+                    Experience the <br></br>
+                    <span style={{ color: '#ff4f00' }}>
+                      {' '}
+                      future of online shopping{' '}
+                    </span>
                     with us
                   </h1>
                   <p>
-                    We believe in the transformative power of books and the joy
-                    of reading. Our intuitive library management system is here
-                    to help you find, borrow, and enjoy the books you love. Join
-                    us on a journey through endless stories and limitless
-                    learning. Your next adventure awaits!
+                    Browse through our vast collection of products, explore
+                    exciting offers, and enjoy fast delivery. Get ready to shop
+                    like never before!, we make shopping easy and fun. With a
+                    wide range of products, you'll always find something new to
+                    love.
                   </p>
                   <Link to="/login" style={{ textDecoration: 'none' }}>
                     <button className="get-started">Get Started</button>
@@ -161,7 +228,7 @@ const Home = () => {
                 <div className="body-right-img-container">
                   {' '}
                   <img
-                    src={bestBook}
+                    src={bestProduct}
                     alt="dashboard"
                     className="dashboard-img"
                   />
