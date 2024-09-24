@@ -152,6 +152,19 @@ app.get('/myproducts/:username', async (req, res) => {
   }
 });
 
+app.get('/filteredRes/:prediction', async (req, res) => {
+  const str = req.params.prediction; // Corrected typo here
+  if (!str) {
+    return res.status(400).send('Prediction is required'); // Handle empty string
+  }
+  const prediction = str.charAt(0).toUpperCase() + str.slice(1);
+  
+  
+  const products = await Product.find({ productname: prediction });
+  console.log('prod' + products);
+  res.json(products);
+});
+
 app.listen(4000, () => {
   console.log('Server running on 4000');
 });
