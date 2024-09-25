@@ -70,6 +70,16 @@ app.post('/api/upload-image', upload.single('file'), async (req, res) => {
       price: req.body.price,
       description: req.body.description,
       fileUrl: downloadURL,
+      category: req.body.category,
+      brand: req.body.brand,
+      stock: req.body.stock,
+      discount: req.body.discount,
+      colorVariants: req.body.colorVariants
+        ? req.body.colorVariants.split(',')
+        : [],
+      sizeVariants: req.body.sizeVariants
+        ? req.body.sizeVariants.split(',')
+        : [],
     });
     console.log(newProduct);
     await newProduct.save();
@@ -158,8 +168,7 @@ app.get('/filteredRes/:prediction', async (req, res) => {
     return res.status(400).send('Prediction is required'); // Handle empty string
   }
   const prediction = str.charAt(0).toUpperCase() + str.slice(1);
-  
-  
+
   const products = await Product.find({ productname: prediction });
   console.log('prod' + products);
   res.json(products);
