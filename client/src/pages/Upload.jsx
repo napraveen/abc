@@ -14,6 +14,12 @@ const ImageUpload = () => {
     productname: '',
     price: '',
     description: '',
+    category: '',
+    brand: '',
+    stock: 0,
+    discount: 0,
+    colorVariants: '',
+    sizeVariants: '',
   });
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -41,6 +47,12 @@ const ImageUpload = () => {
       formData.append('productname', productData.productname);
       formData.append('price', productData.price);
       formData.append('description', productData.description);
+      formData.append('category', productData.category);
+      formData.append('brand', productData.brand);
+      formData.append('stock', productData.stock);
+      formData.append('discount', productData.discount);
+      formData.append('colorVariants', productData.colorVariants);
+      formData.append('sizeVariants', productData.sizeVariants);
 
       const response = await axios.post(
         `${serverOrigin}/api/upload-image`,
@@ -54,7 +66,17 @@ const ImageUpload = () => {
 
       console.log('Image uploaded successfully:', response.data.imageUrl);
       setImageUrl(response.data.imageUrl);
-      setProductData({ productname: '', price: '', description: '' });
+      setProductData({
+        productname: '',
+        price: '',
+        description: '',
+        category: '',
+        brand: '',
+        stock: 0,
+        discount: 0,
+        colorVariants: '',
+        sizeVariants: '',
+      });
       setSelectedFile(null);
     } catch (error) {
       console.error('Error uploading image:', error);
@@ -108,6 +130,55 @@ const ImageUpload = () => {
                 onChange={handleChange}
                 placeholder="Description"
               />
+
+              <input
+                type="text"
+                name="category"
+                value={productData.category}
+                onChange={handleChange}
+                placeholder="Category"
+              />
+
+              <input
+                type="text"
+                name="brand"
+                value={productData.brand}
+                onChange={handleChange}
+                placeholder="Brand (Optional)"
+              />
+
+              <input
+                type="number"
+                name="stock"
+                value={productData.stock}
+                onChange={handleChange}
+                placeholder="Stock Quantity"
+              />
+
+              <input
+                type="number"
+                name="discount"
+                value={productData.discount}
+                onChange={handleChange}
+                placeholder="Discount (Optional)"
+              />
+
+              <input
+                type="text"
+                name="colorVariants"
+                value={productData.colorVariants}
+                onChange={handleChange}
+                placeholder="Color Variants (Optional)"
+              />
+
+              <input
+                type="text"
+                name="sizeVariants"
+                value={productData.sizeVariants}
+                onChange={handleChange}
+                placeholder="Size Variants (Optional)"
+              />
+
               <button type="submit">Upload</button>
             </form>
           </div>
