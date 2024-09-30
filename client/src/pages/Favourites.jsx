@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
 import GetUserDetails from '../functions/GetUserDetails';
-const AvailableProducts = () => {
+const Favourites = () => {
   const { userDetails } = GetUserDetails();
 
   const [products, setProducts] = useState([]);
@@ -14,7 +14,7 @@ const AvailableProducts = () => {
   useEffect(() => {
     const fetchproducts = async () => {
       try {
-        const res = await axios.get(`${serverOrigin}/products`);
+        const res = await axios.get(`${serverOrigin}/likedProducts`);
         setProducts(res.data);
       } catch (err) {
         console.log('Error fetching the products data:', err);
@@ -196,4 +196,4 @@ const AvailableProducts = () => {
   );
 };
 
-export default AvailableProducts;
+export default Favourites;

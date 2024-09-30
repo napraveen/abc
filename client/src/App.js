@@ -7,6 +7,7 @@ import Upload from './pages/Upload';
 import User from './pages/Users';
 import PageNotFound from './pages/PageNotFound';
 import Test from './pages/Test';
+import Favourites from './pages/Favourites';
 function App() {
   return (
     <div className="App">
@@ -17,6 +18,7 @@ function App() {
         <Route path="/availableproducts" element={<AvailableProducts />} />
         <Route path="/upload" element={<Upload />} />
         <Route path="/users" element={<User />} />
+        <Route path='/favourites' element={<Favourites/>}/>
         <Route path="/test" element={<Test />} />
         <Route path="*" element={<PageNotFound />}></Route>
       </Routes>
