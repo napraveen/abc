@@ -48,6 +48,7 @@ const productSchema = new mongoose.Schema({
       rating: { type: Number },
     },
   ],
+  likeCount: { type: Number, default: 0 }, // Total number of likes
 
   colorVariants: [String],
   sizeVariants: [String],
@@ -72,8 +73,26 @@ const IssuedProductSchema = new mongoose.Schema({
   },
 });
 
+const likedProductSchema = new mongoose.Schema({
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true,
+  },
+  product: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Product',
+    required: true,
+  },
+  likedAt: {
+    type: Date,
+    default: Date.now,
+  },
+});
+
 const Product = mongoose.model('Product', productSchema);
+const LikedProduct = mongoose.model('LikedProduct', likedProductSchema);
 
 const User = mongoose.model('User', userSchema);
 const IssuedProduct = mongoose.model('IssuedProduct', IssuedProductSchema);
-module.exports = { User, Product, IssuedProduct };
+module.exports = { User, Product, IssuedProduct, LikedProduct };

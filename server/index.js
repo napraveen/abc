@@ -1,6 +1,6 @@
 const express = require('express');
 const app = express();
-const { User, Product, IssuedProduct } = require('./db');
+const { User, Product, IssuedProduct, LikedProduct } = require('./db');
 const cors = require('cors');
 const mongoose = require('mongoose');
 const cookieParser = require('cookie-parser');
@@ -45,6 +45,16 @@ app.get('/api/user/:username', async (req, res) => {
 app.get('/products', async (req, res) => {
   try {
     const products = await Product.find();
+    res.json(products);
+    console.log(products);
+  } catch (err) {
+    res.status(500).send(err);
+  }
+});
+
+app.get('/likedProducts', async (req, res) => {
+  try {
+    const products = await LikedProduct.find();
     res.json(products);
     console.log(products);
   } catch (err) {
@@ -172,6 +182,40 @@ app.get('/filteredRes/:prediction', async (req, res) => {
   const products = await Product.find({ productname: prediction });
   console.log('prod' + products);
   res.json(products);
+});
+
+app.post('/handleLike', async (req, res) => {
+  const { userId, productId } = req.body;
+
+  try {
+    const existingLike = await LikedProduct.findOne({
+      user: userId,
+      product: productId,
+    });
+
+    if (!existingLike) {
+      // If the user hasn't liked the product, create a new like entry
+      const newLike = new LikedProduct({ user: userId, product: productId });
+      await newLike.save();
+
+      // Increment the like count in the product
+      await Product.findByIdAndUpdate(productId, { $inc: { likeCount: 1 } });
+
+      return res.status(200).json({ message: 'Product liked successfully!' });
+    } else {
+      await existingLike.deleteOne(); // Use deleteOne() instead of remove()
+      await Product.findByIdAndUpdate(
+        productId,
+        { $inc: { likeCount: -1 } }, // Decrease the like count
+        { new: true }
+      );
+
+      return res.status(200).json({ message: 'Product unliked successfully!' });
+    }
+  } catch (error) {
+    console.error('Error handling like:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
 });
 
 app.listen(4000, () => {
